@@ -8,11 +8,15 @@ const migrationRun = require("./database/sqlite/migrations");
 
 const routes = require("./routes");
 
+const uploadConfig = require("./config/upload");
+
 const app = express();
 
 migrationRun();
 
 app.use(express.json());
+
+app.use("/files", express.static(uploadConfig.UPLOAD_FOLDER));
 
 app.use(routes);
 
