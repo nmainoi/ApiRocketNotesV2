@@ -25,13 +25,13 @@ class UsersController {
   }
   async update(req, res) {
     const { name, email, password, avatar, old_password } = req.body;
-    const { id } = req.params;
+    const user_id = req.user.id;
 
     const database = await SqliteConnection();
 
     const CheckUserExists = await database.get(
       `SELECT * FROM users WHERE id = ?`,
-      [id]
+      [user_id]
     );
 
     if (!CheckUserExists) throw new AppError("User not found.", 400);
@@ -52,7 +52,7 @@ class UsersController {
       [email]
     );
 
-    if (userWithSameEmail && userWithSameEmail.id != id)
+    if (userWithSameEmail && userWithSameEmail.id != user_id)
       throw new AppError("Email already in use.", 400);
 
     // verify if request send user name if not use from database and do the same for all fields
@@ -65,7 +65,7 @@ class UsersController {
 
     await database.run(
       `UPDATE users SET name = ?, email = ?, password = ?, avatar = ?, updated_at = DATETIME('now') WHERE id = ?`,
-      [nameToSave, emailToSave, passwordToSave, avatarToSave, id]
+      [nameToSave, emailToSave, passwordToSave, avatarToSave, user_id]
     );
 
     return res.status(200).json();

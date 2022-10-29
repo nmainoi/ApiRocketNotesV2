@@ -3,7 +3,7 @@ const knex = require("../database/knex");
 class NotesController {
   async create(request, response) {
     const { title, description, tags, links } = request.body;
-    const { user_id } = request.params;
+    const  user_id  = request.user.id;
     const note_id = await knex("notes").insert({
       title,
       description,
@@ -50,7 +50,8 @@ class NotesController {
     response.json();
   }
   async index(request, response) {
-    const { user_id,title,tags } = request.query;
+    const { title,tags } = request.query;
+    const user_id = request.user.id;
 let notes;
     if(tags){
       const filterTags = tags.split(",").map((tag) => tag.trim());
