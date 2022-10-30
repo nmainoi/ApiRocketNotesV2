@@ -37,7 +37,8 @@ class UsersController {
     if (!CheckUserExists) throw new AppError("User not found.", 400);
 
     //verify password
-    if (old_password && password) {
+    console.log(old_password,password);
+    if (old_password && password ) {
       const checkOldPassword = await compare(
         old_password,
         CheckUserExists.password
@@ -45,7 +46,8 @@ class UsersController {
 
       if (!checkOldPassword)
         throw new AppError("Password does not match.", 400);
-    } else throw new AppError("Password does not match.", 400);
+    } else if(password.length > 0) {
+    throw new AppError("Password does not match.", 400);}
 
     const userWithSameEmail = await database.get(
       `SELECT * FROM users WHERE email = ?`,
