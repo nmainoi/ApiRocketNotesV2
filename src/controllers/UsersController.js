@@ -6,6 +6,7 @@ class UsersController {
   async create(req, res) {
     const { name, email, password } = req.body;
 
+    console.log(req.body)
     const database = await SqliteConnection();
 
     const CheckUserExists = await database.get(
